@@ -271,4 +271,4 @@ If you need help setting Iris up or modifying the bot, DM me on Discord:
 
 # 📄 License
 
-Add your preferred license here before publishing the project publicly.
+This project is licensed under the MIT License. See the [LICENSE](LICENSE) file for details.
