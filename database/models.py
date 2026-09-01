@@ -239,15 +239,30 @@ async def remove_all_log_channels(guild_id):
 # WELCOME / GOODBYE SETTINGS
 # ==========================================
 
-async def set_welcome_channel(guild_id, channel_id):
+async def set_welcome_channel(
+    guild_id,
+    channel_id,
+    rules_channel_id=None,
+    roles_channel_id=None,
+    general_channel_id=None
+):
+    update = {
+        "welcome.channel_id": channel_id,
+        "welcome.enabled": True
+    }
+
+    if rules_channel_id is not None:
+        update["welcome.rules_channel_id"] = rules_channel_id
+
+    if roles_channel_id is not None:
+        update["welcome.roles_channel_id"] = roles_channel_id
+
+    if general_channel_id is not None:
+        update["welcome.general_channel_id"] = general_channel_id
+
     await settings.update_one(
         {"guild_id": guild_id},
-        {
-            "$set": {
-                "welcome.channel_id": channel_id,
-                "welcome.enabled": True
-            }
-        },
+        {"$set": update},
         upsert=True
     )
 
