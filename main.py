@@ -6,6 +6,7 @@ from discord.ext import commands
 from dotenv import load_dotenv
 
 from database.database import connect_database
+from database.models import get_prefix
 
 # ==========================
 # LOAD ENVIRONMENT VARIABLES
@@ -30,9 +31,16 @@ intents.guilds = True
 # CREATE BOT
 # ==========================
 
+async def get_bot_prefix(bot, message):
+    if message.guild is None:
+        return "!"
+    return await get_prefix(message.guild.id)
+
+
 bot = commands.Bot(
-    command_prefix="!",
-    intents=intents
+    command_prefix=get_bot_prefix,
+    intents=intents,
+    help_command=None
 )
 
 bot.start_time = discord.utils.utcnow()
@@ -82,6 +90,7 @@ async def on_ready():
 async def load_cogs():
 
     cogs = [
+        "cogs.help",
         "cogs.utility",
         "cogs.moderation",
         "cogs.logging",

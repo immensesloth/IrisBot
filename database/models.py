@@ -479,3 +479,30 @@ async def get_user_open_ticket(
             return ticket
 
     return None        
+# ==========================================
+# PREFIX SETTINGS
+# ==========================================
+
+DEFAULT_PREFIX = "!"
+
+
+async def get_prefix(guild_id):
+    """Return the configured prefix for a guild, or the default prefix."""
+    if not guild_id:
+        return DEFAULT_PREFIX
+
+    data = await settings.find_one({"guild_id": guild_id})
+    if not data:
+        return DEFAULT_PREFIX
+
+    prefix = data.get("prefix", DEFAULT_PREFIX)
+    return prefix if isinstance(prefix, str) and prefix else DEFAULT_PREFIX
+
+
+async def set_prefix(guild_id, prefix):
+    """Persist a guild-specific prefix in MongoDB."""
+    await settings.update_one(
+        {"guild_id": guild_id},
+        {"$set": {"prefix": prefix}},
+        upsert=True
+    )
