@@ -14,15 +14,6 @@ from database.models import (
 from utils.embeds import IrisEmbed
 
 
-# ==========================================
-# IRIS CHANNELS
-# ==========================================
-
-RULES_CHANNEL_ID = 1272255305857892566
-SELF_ROLE_CHANNEL_ID = 1269418461184917586
-GENERAL_CHAT_CHANNEL_ID = 1270542333380788245
-
-
 class Welcome(commands.Cog):
 
     def __init__(self, bot):
@@ -35,18 +26,24 @@ class Welcome(commands.Cog):
 
     @app_commands.command(
         name="setwelcome",
-        description="Set the channel where welcome messages are sent."
+        description="Configure the welcome message and its server channels."
     )
     @app_commands.checks.has_permissions(manage_guild=True)
     async def setwelcome(
         self,
         interaction: discord.Interaction,
-        channel: discord.TextChannel
+        channel: discord.TextChannel,
+        rules: discord.TextChannel | None = None,
+        roles: discord.TextChannel | None = None,
+        chat: discord.TextChannel | None = None
     ):
 
         await set_welcome_channel(
             interaction.guild.id,
-            channel.id
+            channel.id,
+            rules.id if rules else None,
+            roles.id if roles else None,
+            chat.id if chat else None
         )
 
         embed = IrisEmbed.success(
@@ -64,9 +61,23 @@ class Welcome(commands.Cog):
         )
 
         embed.add_field(
-            name="📍 Channel",
+            name="📍 Welcome Channel",
             value=channel.mention,
             inline=True
+        )
+
+        configured = []
+        if rules:
+            configured.append(f"📜 Rules: {rules.mention}")
+        if roles:
+            configured.append(f"🎭 Roles: {roles.mention}")
+        if chat:
+            configured.append(f"💬 Chat: {chat.mention}")
+
+        embed.add_field(
+            name="🔗 Server Channels",
+            value="\n".join(configured) if configured else "Not configured — you can add them with `/setwelcome`.",
+            inline=False
         )
 
         embed.set_footer(
@@ -220,38 +231,25 @@ class Welcome(commands.Cog):
             return
 
         # ------------------------------------------
-        # CHANNEL MENTIONS
+        # SERVER-SPECIFIC CHANNELS
         # ------------------------------------------
 
-        rules_channel = member.guild.get_channel(
-            RULES_CHANNEL_ID
-        )
+        rules_channel = None
+        roles_channel = None
+        general_channel = None
 
-        self_role_channel = member.guild.get_channel(
-            SELF_ROLE_CHANNEL_ID
-        )
+        rules_channel_id = config.get("rules_channel_id")
+        roles_channel_id = config.get("roles_channel_id")
+        general_channel_id = config.get("general_channel_id")
 
-        general_channel = member.guild.get_channel(
-            GENERAL_CHAT_CHANNEL_ID
-        )
+        if rules_channel_id:
+            rules_channel = member.guild.get_channel(rules_channel_id)
 
-        rules_mention = (
-            rules_channel.mention
-            if rules_channel
-            else f"<#{RULES_CHANNEL_ID}>"
-        )
+        if roles_channel_id:
+            roles_channel = member.guild.get_channel(roles_channel_id)
 
-        self_role_mention = (
-            self_role_channel.mention
-            if self_role_channel
-            else f"<#{SELF_ROLE_CHANNEL_ID}>"
-        )
-
-        general_mention = (
-            general_channel.mention
-            if general_channel
-            else f"<#{GENERAL_CHAT_CHANNEL_ID}>"
-        )
+        if general_channel_id:
+            general_channel = member.guild.get_channel(general_channel_id)
 
         # ------------------------------------------
         # WELCOME EMBED
@@ -281,43 +279,46 @@ class Welcome(commands.Cog):
         # RULES
         # ------------------------------------------
 
-        embed.add_field(
-            name="📜 Read the Rules",
-            value=(
-                "Before you start chatting, make sure you've "
-                "read our server rules.\n\n"
-                f"📖 Head over to {rules_mention}"
-            ),
-            inline=False
-        )
+        if rules_channel:
+            embed.add_field(
+                name="📜 Read the Rules",
+                value=(
+                    "Before you start chatting, make sure you've "
+                    "read our server rules.\n\n"
+                    f"📖 Head over to {rules_channel.mention}"
+                ),
+                inline=False
+            )
 
         # ------------------------------------------
         # SELF ROLES
         # ------------------------------------------
 
-        embed.add_field(
-            name="🎭 Choose Your Roles",
-            value=(
-                "Customize your experience by choosing the "
-                "roles that suit you.\n\n"
-                f"🎨 Pick your roles in {self_role_mention}"
-            ),
-            inline=False
-        )
+        if roles_channel:
+            embed.add_field(
+                name="🎭 Choose Your Roles",
+                value=(
+                    "Customize your experience by choosing the "
+                    "roles that suit you.\n\n"
+                    f"🎨 Pick your roles in {roles_channel.mention}"
+                ),
+                inline=False
+            )
 
         # ------------------------------------------
         # GENERAL CHAT
         # ------------------------------------------
 
-        embed.add_field(
-            name="💬 Meet the Community",
-            value=(
-                "Don't be shy! Say hello, introduce yourself, "
-                "and jump into the conversation.\n\n"
-                f"💬 Start chatting in {general_mention}"
-            ),
-            inline=False
-        )
+        if general_channel:
+            embed.add_field(
+                name="💬 Meet the Community",
+                value=(
+                    "Don't be shy! Say hello, introduce yourself, "
+                    "and jump into the conversation.\n\n"
+                    f"💬 Start chatting in {general_channel.mention}"
+                ),
+                inline=False
+            )
 
         # ------------------------------------------
         # SERVER MESSAGE
