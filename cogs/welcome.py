@@ -15,7 +15,7 @@ from utils.embeds import IrisEmbed
 
 
 # ==========================================
-# ANBU MANI CHANNELS
+# IRIS CHANNELS
 # ==========================================
 
 RULES_CHANNEL_ID = 1272255305857892566
@@ -70,7 +70,7 @@ class Welcome(commands.Cog):
         )
 
         embed.set_footer(
-            text="Anbu Mani • Welcome System"
+            text="Iris • Welcome System"
         )
 
         await interaction.response.send_message(
@@ -101,7 +101,7 @@ class Welcome(commands.Cog):
         )
 
         embed.set_footer(
-            text="Anbu Mani • Welcome System"
+            text="Iris • Welcome System"
         )
 
         await interaction.response.send_message(
@@ -149,7 +149,7 @@ class Welcome(commands.Cog):
         )
 
         embed.set_footer(
-            text="Anbu Mani • Goodbye System"
+            text="Iris • Goodbye System"
         )
 
         await interaction.response.send_message(
@@ -180,7 +180,7 @@ class Welcome(commands.Cog):
         )
 
         embed.set_footer(
-            text="Anbu Mani • Goodbye System"
+            text="Iris • Goodbye System"
         )
 
         await interaction.response.send_message(
@@ -258,7 +258,7 @@ class Welcome(commands.Cog):
         # ------------------------------------------
 
         embed = IrisEmbed.success(
-            "🌸 Welcome to Anbu Mani!",
+            "🌸 Welcome to Iris!",
             (
                 f"Hey {member.mention}! 👋\n\n"
                 "We're genuinely happy to have you here. 💗\n\n"
@@ -327,7 +327,7 @@ class Welcome(commands.Cog):
             name="💖 A Little Reminder",
             value=(
                 "Be respectful • Have fun • Make friends\n"
-                "Let's keep Anbu Mani a welcoming place for everyone."
+                "Let's keep Iris a welcoming place for everyone."
             ),
             inline=False
         )
@@ -337,7 +337,7 @@ class Welcome(commands.Cog):
         # ------------------------------------------
 
         embed.set_footer(
-            text="Anbu Mani • We're glad you're here!"
+            text="Iris • We're glad you're here!"
         )
 
         embed.timestamp = discord.utils.utcnow()
@@ -385,7 +385,7 @@ class Welcome(commands.Cog):
         embed = IrisEmbed.warning(
             "👋 We'll Miss You!",
             (
-                f"**{member}** has left **Anbu Mani**.\n\n"
+                f"**{member}** has left **Iris**.\n\n"
                 "Thank you for being part of our community. 💗\n"
                 "We hope you enjoyed your time with us and "
                 "wish you nothing but the best!"
@@ -428,7 +428,7 @@ class Welcome(commands.Cog):
         embed.add_field(
             name="🌸 Until We Meet Again",
             value=(
-                "Once a part of Anbu Mani, "
+                "Once a part of Iris, "
                 "always a part of our memories. 💖\n\n"
                 "Take care and stay safe!"
             ),
@@ -440,7 +440,7 @@ class Welcome(commands.Cog):
         # ------------------------------------------
 
         embed.set_footer(
-            text="Anbu Mani • Until we meet again!"
+            text="Iris • Until we meet again!"
         )
 
         embed.timestamp = discord.utils.utcnow()
